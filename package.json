@@ -1,0 +1,22 @@
+{
+  "name": "field_service_backend",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+
+  "scripts": {
+    "dev":"tsx watch src/server.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "tsx": "^4.23.15"
+  }
+}
