@@ -1,0 +1,20 @@
+model Service {
+  id                     String   @id @default(uuid())
+  name                   String
+  description            String
+  category               String   // e.g. "HVAC", "Plumbing", "Electrical", "Appliance"
+  basePrice              Float
+  estimatedDurationHours Float    @default(2.0)
+  isAvailable            Boolean  @default(true)
+  isDeleted              Boolean  @default(false)
+  deletedAt              DateTime?
+
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  serviceRequests        ServiceRequest[]
+
+  @@index([category])
+  @@index([isAvailable])
+  @@index([isDeleted])
+}
