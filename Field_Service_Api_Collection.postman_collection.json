@@ -1,0 +1,669 @@
+{
+  "info": {
+    "_postman_id": "field-service-api-v1-collection-id",
+    "name": "Field_Service_Management_API",
+    "description": "Comprehensive Postman API collection for Field Service Management System REST API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "techToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "serviceId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "technicianId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "requestId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "invoiceId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Customer\",\n  \"email\": \"newcustomer@fieldservice.com\",\n  \"password\": \"Cust@12345\",\n  \"phone\": \"+1-555-9988\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.accessToken) {",
+                  "  pm.collectionVariables.set('adminToken', json.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@fieldservice.com\",\n  \"password\": \"Admin@12345\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Login (Technician)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.accessToken) {",
+                  "  pm.collectionVariables.set('techToken', json.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"technician@fieldservice.com\",\n  \"password\": \"Tech@12345\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Login (Customer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.accessToken) {",
+                  "  pm.collectionVariables.set('customerToken', json.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@fieldservice.com\",\n  \"password\": \"Cust@12345\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"] }
+          }
+        },
+        {
+          "name": "GCP Google Social Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"googleuser@fieldservice.com\",\n  \"name\": \"Google Test User\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/google", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "google"] }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/refresh-token", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "refresh-token"] }
+          }
+        },
+        {
+          "name": "Get Current Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "me"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"Cust@12345\",\n  \"newPassword\": \"Cust@54321\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/change-password", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "change-password"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Users",
+      "item": [
+        {
+          "name": "Get All Users (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users?page=1&limit=10&role=CUSTOMER",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "role", "value": "CUSTOMER" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", ":id"] }
+          }
+        },
+        {
+          "name": "Update Profile (Me)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Johnathan Doe\",\n  \"phone\": \"+1-555-7788\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/users/me", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "me"] }
+          }
+        },
+        {
+          "name": "Update User Status (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/users/:id/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", ":id", "status"] }
+          }
+        },
+        {
+          "name": "Soft Delete User (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", ":id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Technicians",
+      "item": [
+        {
+          "name": "Create Technician Profile (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"David Miller\",\n  \"email\": \"david.tech@fieldservice.com\",\n  \"password\": \"Tech@12345\",\n  \"phone\": \"+1-555-0205\",\n  \"skills\": [\"Electrical\", \"Smart Home\"],\n  \"experienceYears\": 6,\n  \"hourlyRate\": 60.0,\n  \"serviceArea\": \"Metro West\",\n  \"bio\": \"Specialist in residential solar & high-efficiency circuit installation.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/technicians", "host": ["{{baseUrl}}"], "path": ["api", "v1", "technicians"] }
+          }
+        },
+        {
+          "name": "List Technicians (Public with Filters)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/technicians?skill=HVAC&isAvailable=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "technicians"],
+              "query": [
+                { "key": "skill", "value": "HVAC" },
+                { "key": "isAvailable", "value": "true" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Technician By ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/technicians/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "technicians", ":id"] }
+          }
+        },
+        {
+          "name": "Check Technician Availability & Schedule Conflicts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/technicians/:id/availability?startDate=2026-10-03T05:00:00.000Z&endDate=2026-10-03T07:00:00.000Z",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "technicians", ":id", "availability"],
+              "query": [
+                { "key": "startDate", "value": "2026-10-03T05:00:00.000Z" },
+                { "key": "endDate", "value": "2026-10-03T07:00:00.000Z" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Technician Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{techToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hourlyRate\": 70.0,\n  \"serviceArea\": \"Metro North, Downtown & Suburbs\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/technicians/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "technicians", ":id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Services",
+      "item": [
+        {
+          "name": "Create Service Offering (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Commercial Chiller Maintenance\",\n  \"description\": \"Comprehensive inspection and preventative maintenance for industrial chillers.\",\n  \"category\": \"HVAC\",\n  \"basePrice\": 320.0,\n  \"estimatedDurationHours\": 4.0\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/services", "host": ["{{baseUrl}}"], "path": ["api", "v1", "services"] }
+          }
+        },
+        {
+          "name": "List Services (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/services?category=HVAC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "services"],
+              "query": [{ "key": "category", "value": "HVAC" }]
+            }
+          }
+        },
+        {
+          "name": "Get Service By ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/services/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "services", ":id"] }
+          }
+        },
+        {
+          "name": "Update Service (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"basePrice\": 350.0\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/services/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "services", ":id"] }
+          }
+        },
+        {
+          "name": "Delete Service (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/services/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "services", ":id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Service Requests (Work Orders)",
+      "item": [
+        {
+          "name": "Create Service Request (Customer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceId\": \"{{serviceId}}\",\n  \"title\": \"Main Breaker Tripping Continuously\",\n  \"description\": \"The 50A breaker trips whenever the oven and dryer run concurrently. Smells faintly hot.\",\n  \"address\": \"420 Oak Avenue, Apt 2\",\n  \"urgency\": \"HIGH\",\n  \"preferredDate\": \"2026-10-06T14:00:00.000Z\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/service-requests", "host": ["{{baseUrl}}"], "path": ["api", "v1", "service-requests"] }
+          }
+        },
+        {
+          "name": "List All Service Requests (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/service-requests?page=1&limit=10&status=REQUESTED",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "service-requests"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "status", "value": "REQUESTED" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Requests (Customer)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/service-requests/my-requests", "host": ["{{baseUrl}}"], "path": ["api", "v1", "service-requests", "my-requests"] }
+          }
+        },
+        {
+          "name": "Get My Assignments (Technician)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{techToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/service-requests/my-assignments", "host": ["{{baseUrl}}"], "path": ["api", "v1", "service-requests", "my-assignments"] }
+          }
+        },
+        {
+          "name": "Get Request By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/service-requests/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "service-requests", ":id"] }
+          }
+        },
+        {
+          "name": "Manager Review Request (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estimatedPrice\": 180.0,\n  \"adminNotes\": \"Checked electrical load; assigned for breaker and panel diagnostics.\",\n  \"urgency\": \"HIGH\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/service-requests/:id/review", "host": ["{{baseUrl}}"], "path": ["api", "v1", "service-requests", ":id", "review"] }
+          }
+        },
+        {
+          "name": "Assign Technician with Conflict Detection (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technicianId\": \"{{technicianId}}\",\n  \"scheduledDate\": \"2026-10-06T14:00:00.000Z\",\n  \"scheduledEndDate\": \"2026-10-06T17:00:00.000Z\",\n  \"notes\": \"Assigned to master technician with specialized load gear.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/service-requests/:id/assign", "host": ["{{baseUrl}}"], "path": ["api", "v1", "service-requests", ":id", "assign"] }
+          }
+        },
+        {
+          "name": "Update Work Order Status (Technician / Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{techToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"notes\": \"Arrived at customer premises and initiated panel load test.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/service-requests/:id/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "service-requests", ":id", "status"] }
+          }
+        },
+        {
+          "name": "Submit Service Report & Complete Work (Technician)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{techToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceReport\": \"Replaced oxidized 50A breaker with Siemens Q250. Re-torqued bus bar connectors to 45 in-lbs.\",\n  \"partsUsed\": \"1x Siemens Q250 50-Amp Double Pole Breaker, Noalox anti-oxidant paste\",\n  \"finalPrice\": 195.0\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/service-requests/:id/report", "host": ["{{baseUrl}}"], "path": ["api", "v1", "service-requests", ":id", "report"] }
+          }
+        },
+        {
+          "name": "Cancel / Soft Delete Request",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/service-requests/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "service-requests", ":id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Invoices",
+      "item": [
+        {
+          "name": "List All Invoices (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/invoices?status=UNPAID", "host": ["{{baseUrl}}"], "path": ["api", "v1", "invoices"] }
+          }
+        },
+        {
+          "name": "Get My Invoices (Customer)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/invoices/my-invoices", "host": ["{{baseUrl}}"], "path": ["api", "v1", "invoices", "my-invoices"] }
+          }
+        },
+        {
+          "name": "Get Invoice By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/invoices/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "invoices", ":id"] }
+          }
+        },
+        {
+          "name": "Cancel Invoice (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/invoices/:id/cancel", "host": ["{{baseUrl}}"], "path": ["api", "v1", "invoices", ":id", "cancel"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Payments (Stripe)",
+      "item": [
+        {
+          "name": "Create Stripe Checkout Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceId\": \"{{invoiceId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/payments/create-checkout-session", "host": ["{{baseUrl}}"], "path": ["api", "v1", "payments", "create-checkout-session"] }
+          }
+        },
+        {
+          "name": "Verify Stripe Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"cs_test_mock_example_id\",\n  \"invoiceId\": \"{{invoiceId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/payments/verify", "host": ["{{baseUrl}}"], "path": ["api", "v1", "payments", "verify"] }
+          }
+        },
+        {
+          "name": "Get Payment Details",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/payments/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "payments", ":id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Reviews & Feedback",
+      "item": [
+        {
+          "name": "Submit Customer Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceRequestId\": \"{{requestId}}\",\n  \"rating\": 5,\n  \"comment\": \"Outstanding service! Technician arrived promptly, resolved the fault safely, and explained everything clearly.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/reviews", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reviews"] }
+          }
+        },
+        {
+          "name": "Get All Reviews",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/reviews?minRating=4", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reviews"] }
+          }
+        },
+        {
+          "name": "Get Technician Reviews",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/reviews/technician/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reviews", "technician", ":id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Admin Analytics & Audit Logs",
+      "item": [
+        {
+          "name": "Get Dashboard Statistics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/admin/dashboard-stats", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "dashboard-stats"] }
+          }
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/audit-logs?page=1&limit=20&action=TECHNICIAN_ASSIGNED",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "audit-logs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "action", "value": "TECHNICIAN_ASSIGNED" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
