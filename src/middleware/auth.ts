@@ -34,7 +34,7 @@ export const auth = (...roles: Role[]) => {
         throw new AppError(403, `Forbidden - Requires one of roles: [${roles.join(", ")}]`);
       }
 
-      req.user = decoded;
+      (req as Request & { user: typeof decoded }).user = decoded;
       next();
     } catch (error) {
       if (error instanceof AppError) throw error;
