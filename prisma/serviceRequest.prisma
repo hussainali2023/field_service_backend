@@ -1,0 +1,54 @@
+model ServiceRequest {
+  id                 String             @id @default(uuid())
+  requestNumber      String             @unique
+  customerId         String
+  customer           User               @relation("CustomerRequests", fields: [customerId], references: [id])
+  serviceId          String
+  service            Service            @relation(fields: [serviceId], references: [id])
+  technicianId       String?
+  technician         TechnicianProfile? @relation("TechnicianAssignments", fields: [technicianId], references: [id])
+  title              String
+  description        String
+  address            String
+  urgency            UrgencyLevel       @default(MEDIUM)
+  status             RequestStatus      @default(REQUESTED)
+  preferredDate      DateTime
+  scheduledDate      DateTime?
+  scheduledEndDate   DateTime?
+  estimatedPrice     Float?
+  finalPrice         Float?
+  cancellationReason String?
+  adminNotes         String?
+  serviceReport      String?
+  partsUsed          String?
+  isDeleted          Boolean            @default(false)
+  deletedAt          DateTime?
+
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  invoice            Invoice?
+  review             Review?
+  statusLogs         RequestStatusLog[]
+
+  @@index([customerId])
+  @@index([technicianId])
+  @@index([serviceId])
+  @@index([status])
+  @@index([scheduledDate, scheduledEndDate])
+  @@index([isDeleted])
+}
+
+model RequestStatusLog {
+  id               String         @id @default(uuid())
+  serviceRequestId String
+  serviceRequest   ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  fromStatus       RequestStatus?
+  toStatus         RequestStatus
+  changedByUserId  String?
+  notes            String?
+  createdAt        DateTime       @default(now())
+
+  @@index([serviceRequestId])
+  @@index([createdAt])
+}
