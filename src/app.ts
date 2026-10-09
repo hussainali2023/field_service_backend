@@ -8,6 +8,7 @@ import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import { notFound } from "./middleware/notFound";
 import { apiLimiter } from "./middleware/rateLimiter";
 import { AuthRoutes } from "./modules/auth/auth.routes";
+import { UserRoutes } from "./modules/user/user.routes";
 
 
 
@@ -40,6 +41,7 @@ app.get("/", (req: Request, res: Response) => {
 // all the routes
 
 app.use("/api/v1/auth", AuthRoutes);
+app.use("/api/v1/users", UserRoutes)
 
 
 
