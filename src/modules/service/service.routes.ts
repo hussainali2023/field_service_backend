@@ -30,4 +30,4 @@ router.patch(
 
 router.delete("/:id", auth(Role.ADMIN), ServiceController.deleteService);
 
-export const ServiceRoutes = router;
+export const ServiceRoutes:Router = router;

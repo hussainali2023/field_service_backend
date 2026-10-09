@@ -49,4 +49,4 @@ router.post(
   AuthController.changePassword
 );
 
-export const AuthRoutes = router;
+export const AuthRoutes: Router = router;

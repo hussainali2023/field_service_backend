@@ -66,4 +66,4 @@ router.post(
 
 router.delete("/:id", auth(), ServiceRequestController.deleteServiceRequest);
 
-export const ServiceRequestRoutes = router;
+export const ServiceRequestRoutes:Router = router;

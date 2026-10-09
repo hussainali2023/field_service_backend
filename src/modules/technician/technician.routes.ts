@@ -30,4 +30,4 @@ router.patch(
   TechnicianController.updateTechnician
 );
 
-export const TechnicianRoutes = router;
+export const TechnicianRoutes:Router = router;

@@ -26,4 +26,4 @@ router.post(
 
 router.get("/:id", auth(), PaymentController.getPaymentById);
 
-export const PaymentRoutes = router;
+export const PaymentRoutes:Router = router;

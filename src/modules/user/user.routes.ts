@@ -30,4 +30,4 @@ router.patch(
 
 router.delete("/:id", auth(Role.ADMIN), UserController.softDeleteUser);
 
-export const UserRoutes = router;
+export const UserRoutes:Router = router;

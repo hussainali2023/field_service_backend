@@ -18,4 +18,4 @@ router.get("/", ReviewController.getAllReviews);
 
 router.get("/technician/:id", ReviewController.getTechnicianReviews);
 
-export const ReviewRoutes = router;
+export const ReviewRoutes:Router = router;

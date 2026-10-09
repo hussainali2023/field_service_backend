@@ -22,4 +22,4 @@ router.post(
 
 router.patch("/:id/cancel", auth(Role.ADMIN), InvoiceController.cancelInvoice);
 
-export const InvoiceRoutes = router;
+export const InvoiceRoutes:Router = router;
