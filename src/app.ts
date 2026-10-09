@@ -12,6 +12,7 @@ import { UserRoutes } from "./modules/user/user.routes";
 import { TechnicianRoutes } from "./modules/technician/technician.routes";
 import { ServiceRoutes } from "./modules/service/service.routes";
 import { ServiceRequestRoutes } from "./modules/serviceRequest/serviceRequest.routes";
+import { InvoiceRoutes } from "./modules/invoice/invoice.routes";
 
 
 
@@ -48,7 +49,7 @@ app.use("/api/v1/users", UserRoutes)
 app.use("/api/v1/technicians", TechnicianRoutes);
 app.use("/api/v1/services", ServiceRoutes);
 app.use("/api/v1/service-requests", ServiceRequestRoutes);
-
+app.use("/api/v1/invoices", InvoiceRoutes);
 
 
 app.use(notFound);
