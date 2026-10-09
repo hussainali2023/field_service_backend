@@ -8,15 +8,19 @@ export type UserJwtPayload = {
   role: Role;
 };
 
+function getExpiresIn(value: string): NonNullable<jwt.SignOptions["expiresIn"]> {
+  return value as NonNullable<jwt.SignOptions["expiresIn"]>;
+}
+
 export function signAccessToken(payload: UserJwtPayload): string {
   return jwt.sign(payload, config.JWT_ACCESS_SECRET, {
-    expiresIn: config.JWT_ACCESS_EXPIRES_IN as jwt.SignOptions["expiresIn"],
+    expiresIn: getExpiresIn(config.JWT_ACCESS_EXPIRES_IN),
   });
 }
 
 export function signRefreshToken(payload: UserJwtPayload): string {
   return jwt.sign(payload, config.JWT_REFRESH_SECRET, {
-    expiresIn: config.JWT_REFRESH_EXPIRES_IN as jwt.SignOptions["expiresIn"],
+    expiresIn: getExpiresIn(config.JWT_REFRESH_EXPIRES_IN),
   });
 }
 
