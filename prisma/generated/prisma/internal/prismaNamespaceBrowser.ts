@@ -17,8 +17,8 @@
 
 import * as runtime from "@prisma/client/runtime/index-browser"
 
-export type * from '../models.ts'
-export type * from './prismaNamespace.ts'
+export type * from '../models'
+export type * from './prismaNamespace'
 
 export const Decimal = runtime.Decimal
 
@@ -51,7 +51,15 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-
+  AuditLog: 'AuditLog',
+  Invoice: 'Invoice',
+  Payment: 'Payment',
+  Review: 'Review',
+  Service: 'Service',
+  ServiceRequest: 'ServiceRequest',
+  RequestStatusLog: 'RequestStatusLog',
+  TechnicianProfile: 'TechnicianProfile',
+  User: 'User'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -68,4 +76,188 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  action: 'action',
+  entity: 'entity',
+  entityId: 'entityId',
+  details: 'details',
+  ipAddress: 'ipAddress',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  serviceRequestId: 'serviceRequestId',
+  amount: 'amount',
+  tax: 'tax',
+  totalAmount: 'totalAmount',
+  status: 'status',
+  dueDate: 'dueDate',
+  issuedAt: 'issuedAt',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  amount: 'amount',
+  method: 'method',
+  status: 'status',
+  transactionId: 'transactionId',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  receiptUrl: 'receiptUrl',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  serviceRequestId: 'serviceRequestId',
+  customerId: 'customerId',
+  technicianId: 'technicianId',
+  rating: 'rating',
+  comment: 'comment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+export const ServiceScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  basePrice: 'basePrice',
+  estimatedDurationHours: 'estimatedDurationHours',
+  isAvailable: 'isAvailable',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
+
+
+export const ServiceRequestScalarFieldEnum = {
+  id: 'id',
+  requestNumber: 'requestNumber',
+  customerId: 'customerId',
+  serviceId: 'serviceId',
+  technicianId: 'technicianId',
+  title: 'title',
+  description: 'description',
+  address: 'address',
+  urgency: 'urgency',
+  status: 'status',
+  preferredDate: 'preferredDate',
+  scheduledDate: 'scheduledDate',
+  scheduledEndDate: 'scheduledEndDate',
+  estimatedPrice: 'estimatedPrice',
+  finalPrice: 'finalPrice',
+  cancellationReason: 'cancellationReason',
+  adminNotes: 'adminNotes',
+  serviceReport: 'serviceReport',
+  partsUsed: 'partsUsed',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ServiceRequestScalarFieldEnum = (typeof ServiceRequestScalarFieldEnum)[keyof typeof ServiceRequestScalarFieldEnum]
+
+
+export const RequestStatusLogScalarFieldEnum = {
+  id: 'id',
+  serviceRequestId: 'serviceRequestId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  changedByUserId: 'changedByUserId',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type RequestStatusLogScalarFieldEnum = (typeof RequestStatusLogScalarFieldEnum)[keyof typeof RequestStatusLogScalarFieldEnum]
+
+
+export const TechnicianProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  skills: 'skills',
+  experienceYears: 'experienceYears',
+  hourlyRate: 'hourlyRate',
+  serviceArea: 'serviceArea',
+  bio: 'bio',
+  rating: 'rating',
+  reviewCount: 'reviewCount',
+  isAvailable: 'isAvailable',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TechnicianProfileScalarFieldEnum = (typeof TechnicianProfileScalarFieldEnum)[keyof typeof TechnicianProfileScalarFieldEnum]
+
+
+export const UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  password: 'password',
+  phone: 'phone',
+  role: 'role',
+  status: 'status',
+  avatar: 'avatar',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+} as const
+
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

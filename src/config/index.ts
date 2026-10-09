@@ -6,18 +6,18 @@ dotenv.config({ path: path.join(process.cwd(), ".env") });
 const config = {
   NODE_ENV: process.env.NODE_ENV || "development",
   PORT: process.env.PORT || 5000,
-  DATABASE_URL: process.env.DATABASE_URL!,
+  DATABASE_URL: process.env.DATABASE_URL! || "",
 
-  JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
-  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
-  JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN,
-  JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
-  BCRYPT_SALT_ROUNDS: Number(process.env.BCRYPT_SALT_ROUNDS),
+  JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET || "",
+  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || "",
+  JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN || "1d",
+  JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
+  BCRYPT_SALT_ROUNDS: Number(process.env.BCRYPT_SALT_ROUNDS) || 10,
 
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || "",
 
-  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET ,
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || "",
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || "" ,
 
   CLIENT_URL: process.env.CLIENT_URL || "http://localhost:3000",
 };

@@ -9,7 +9,71 @@
 * 🟢 You can import this file directly.
 */
 
+export const Role = {
+  CUSTOMER: 'CUSTOMER',
+  TECHNICIAN: 'TECHNICIAN',
+  ADMIN: 'ADMIN'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const UserStatus = {
+  ACTIVE: 'ACTIVE',
+  BLOCKED: 'BLOCKED',
+  SUSPENDED: 'SUSPENDED'
+} as const
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
+export const RequestStatus = {
+  REQUESTED: 'REQUESTED',
+  REVIEWED: 'REVIEWED',
+  ASSIGNED: 'ASSIGNED',
+  SCHEDULED: 'SCHEDULED',
+  ON_THE_WAY: 'ON_THE_WAY',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]
+
+
+export const UrgencyLevel = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  EMERGENCY: 'EMERGENCY'
+} as const
+
+export type UrgencyLevel = (typeof UrgencyLevel)[keyof typeof UrgencyLevel]
+
+
+export const InvoiceStatus = {
+  UNPAID: 'UNPAID',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus]
+
+
+export const PaymentStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const PaymentMethod = {
+  STRIPE: 'STRIPE',
+  CASH: 'CASH',
+  CARD: 'CARD'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
