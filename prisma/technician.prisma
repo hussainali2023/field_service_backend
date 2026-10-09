@@ -1,0 +1,25 @@
+model TechnicianProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills          String[] // e.g. ["Plumbing", "HVAC", "Electrical"]
+  experienceYears Int      @default(1)
+  hourlyRate      Float    @default(35.0)
+  serviceArea     String   @default("City Center")
+  bio             String?
+  rating          Float    @default(5.0)
+  reviewCount     Int      @default(0)
+  isAvailable     Boolean  @default(true)
+  isDeleted       Boolean  @default(false)
+  deletedAt       DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  assignedRequests ServiceRequest[] @relation("TechnicianAssignments")
+  reviews          Review[]         @relation("TechnicianReviews")
+
+  @@index([userId])
+  @@index([isAvailable])
+  @@index([isDeleted])
+}
