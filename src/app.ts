@@ -7,6 +7,7 @@ import config from "./config";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import { notFound } from "./middleware/notFound";
 import { apiLimiter } from "./middleware/rateLimiter";
+import { AuthRoutes } from "./modules/auth/auth.routes";
 
 
 
@@ -35,6 +36,11 @@ app.get("/", (req: Request, res: Response) => {
     message: "Field Service Management System REST API is running smoothly"
   });
 });
+
+// all the routes
+
+app.use("/api/v1/auth", AuthRoutes);
+
 
 
 

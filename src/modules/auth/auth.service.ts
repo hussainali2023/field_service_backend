@@ -1,0 +1,235 @@
+import bcrypt from "bcryptjs";
+import { OAuth2Client } from "google-auth-library";
+import { Role, UserStatus } from "../../../prisma/generated/prisma/enums";
+import config from "../../config";
+import prisma from "../../lib/prisma";
+import { AppError } from "../../utils/appError";
+import { logAudit } from "../../utils/auditLogger";
+import { createTokenPair, signAccessToken, verifyRefreshToken } from "../../utils/jwt";
+
+const googleClient = new OAuth2Client(config.GOOGLE_CLIENT_ID);
+
+export const registerUser = async (payload: {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}) => {
+  const existingUser = await prisma.user.findUnique({
+    where: { email: payload.email.toLowerCase() },
+  });
+
+  if (existingUser) {
+    throw new AppError(409, "User with this email already exists");
+  }
+
+  const hashedPassword = await bcrypt.hash(payload.password, config.BCRYPT_SALT_ROUNDS);
+
+  const newUser = await prisma.user.create({
+    data: {
+      name: payload.name,
+      email: payload.email.toLowerCase(),
+      password: hashedPassword,
+      phone: payload.phone,
+      role: Role.CUSTOMER,
+      status: UserStatus.ACTIVE,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      status: true,
+      phone: true,
+      createdAt: true,
+    },
+  });
+
+  const tokens = createTokenPair({
+    id: newUser.id,
+    email: newUser.email,
+    role: newUser.role,
+  });
+
+  await logAudit({
+    userId: newUser.id,
+    action: "USER_REGISTERED",
+    entity: "User",
+    entityId: newUser.id,
+    details: { email: newUser.email, role: newUser.role },
+  });
+
+  return { user: newUser, ...tokens };
+};
+
+export const loginUser = async (payload: { email: string; password: string }) => {
+  const user = await prisma.user.findUnique({
+    where: { email: payload.email.toLowerCase() },
+    include: { technicianProfile: true },
+  });
+
+  if (!user || user.isDeleted) {
+    throw new AppError(401, "Invalid email or password");
+  }
+
+  if (user.status === UserStatus.BLOCKED || user.status === UserStatus.SUSPENDED) {
+    throw new AppError(403, `Account is ${user.status.toLowerCase()}. Contact support.`);
+  }
+
+  const isPasswordMatch = await bcrypt.compare(payload.password, user.password);
+  if (!isPasswordMatch) {
+    throw new AppError(401, "Invalid email or password");
+  }
+
+  const tokens = createTokenPair({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+  });
+
+  const { password: _, ...userWithoutPassword } = user;
+
+  await logAudit({
+    userId: user.id,
+    action: "USER_LOGGED_IN",
+    entity: "User",
+    entityId: user.id,
+  });
+
+  return { user: userWithoutPassword, ...tokens };
+};
+
+export const googleLogin = async (payload: { idToken?: string; email?: string; name?: string }) => {
+  let email = payload.email;
+  let name = payload.name || "Google User";
+
+  if (payload.idToken && config.GOOGLE_CLIENT_ID) {
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: payload.idToken,
+        audience: config.GOOGLE_CLIENT_ID,
+      });
+      const tokenPayload = ticket.getPayload();
+      if (tokenPayload?.email) {
+        email = tokenPayload.email;
+        name = tokenPayload.name || name;
+      }
+    } catch {
+      throw new AppError(401, "Google token verification failed");
+    }
+  }
+
+  if (!email) {
+    throw new AppError(400, "Google email or valid idToken is required");
+  }
+
+  let user = await prisma.user.findUnique({
+    where: { email: email.toLowerCase() },
+  });
+
+  if (!user) {
+    const randomPassword = await bcrypt.hash(Math.random().toString(36).slice(-10), 10);
+    user = await prisma.user.create({
+      data: {
+        name,
+        email: email.toLowerCase(),
+        password: randomPassword,
+        role: Role.CUSTOMER,
+        status: UserStatus.ACTIVE,
+      },
+    });
+
+    await logAudit({
+      userId: user.id,
+      action: "USER_REGISTERED_GOOGLE",
+      entity: "User",
+      entityId: user.id,
+    });
+  } else if (user.isDeleted || user.status !== UserStatus.ACTIVE) {
+    throw new AppError(403, "Account is disabled or inactive");
+  }
+
+  const tokens = createTokenPair({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+  });
+
+  const { password: _, ...userWithoutPassword } = user;
+  return { user: userWithoutPassword, ...tokens };
+};
+
+export const refreshToken = async (incomingToken: string) => {
+  try {
+    const decoded = verifyRefreshToken(incomingToken);
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
+
+    if (!user || user.isDeleted || user.status !== UserStatus.ACTIVE) {
+      throw new AppError(401, "Unauthorized - Invalid user for refresh token");
+    }
+
+    const newAccessToken = signAccessToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
+
+    return { accessToken: newAccessToken };
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    throw new AppError(401, "Invalid or expired refresh token");
+  }
+};
+
+export const getMe = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      technicianProfile: true,
+    },
+  });
+
+  if (!user || user.isDeleted) {
+    throw new AppError(404, "User profile not found");
+  }
+
+  const { password: _, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+};
+
+export const changePassword = async (
+  userId: string,
+  payload: { oldPassword: string; newPassword: string }
+) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+
+  const isMatch = await bcrypt.compare(payload.oldPassword, user.password);
+  if (!isMatch) {
+    throw new AppError(400, "Current password does not match");
+  }
+
+  const hashedNewPassword = await bcrypt.hash(payload.newPassword, config.BCRYPT_SALT_ROUNDS);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: hashedNewPassword },
+  });
+
+  await logAudit({
+    userId,
+    action: "PASSWORD_CHANGED",
+    entity: "User",
+    entityId: userId,
+  });
+
+  return { message: "Password updated successfully" };
+};
