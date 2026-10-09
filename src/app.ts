@@ -11,6 +11,7 @@ import { AuthRoutes } from "./modules/auth/auth.routes";
 import { UserRoutes } from "./modules/user/user.routes";
 import { TechnicianRoutes } from "./modules/technician/technician.routes";
 import { ServiceRoutes } from "./modules/service/service.routes";
+import { ServiceRequestRoutes } from "./modules/serviceRequest/serviceRequest.routes";
 
 
 
@@ -46,7 +47,7 @@ app.use("/api/v1/auth", AuthRoutes);
 app.use("/api/v1/users", UserRoutes)
 app.use("/api/v1/technicians", TechnicianRoutes);
 app.use("/api/v1/services", ServiceRoutes);
-
+app.use("/api/v1/service-requests", ServiceRequestRoutes);
 
 
 
