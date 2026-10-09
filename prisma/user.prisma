@@ -1,0 +1,25 @@
+model User {
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  password  String
+  phone     String?
+  role      Role       @default(CUSTOMER)
+  status    UserStatus @default(ACTIVE)
+  avatar    String?
+  isDeleted Boolean    @default(false)
+  deletedAt DateTime?
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  technicianProfile TechnicianProfile?
+  serviceRequests   ServiceRequest[]   @relation("CustomerRequests")
+  reviews           Review[]           @relation("CustomerReviews")
+  auditLogs         AuditLog[]
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+  @@index([isDeleted])
+}
