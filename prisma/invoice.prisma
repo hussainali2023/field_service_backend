@@ -1,0 +1,21 @@
+model Invoice {
+  id               String        @id @default(uuid())
+  invoiceNumber    String        @unique
+  serviceRequestId String        @unique
+  serviceRequest   ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  amount           Float
+  tax              Float         @default(0.0)
+  totalAmount      Float
+  status           InvoiceStatus @default(UNPAID)
+  dueDate          DateTime?
+  issuedAt         DateTime      @default(now())
+  paidAt           DateTime?
+
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  payments         Payment[]
+
+  @@index([status])
+  @@index([serviceRequestId])
+}
