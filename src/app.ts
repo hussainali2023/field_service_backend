@@ -65,6 +65,8 @@ app.use("/api/v1/invoices", InvoiceRoutes);
 app.use("/api/v1/payments", PaymentRoutes);
 app.use("/api/v1/reviews", ReviewRoutes);
 app.use("/api/v1/admin", AdminRoutes);
+
+
 app.use(notFound);
 app.use(globalErrorHandler);
 
