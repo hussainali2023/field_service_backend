@@ -1,0 +1,19 @@
+model Payment {
+  id                    String        @id @default(uuid())
+  invoiceId             String
+  invoice               Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  amount                Float
+  method                PaymentMethod @default(STRIPE)
+  status                PaymentStatus @default(PENDING)
+  transactionId         String?       @unique
+  stripePaymentIntentId String?
+  receiptUrl            String?
+  paidAt                DateTime?
+
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@index([invoiceId])
+  @@index([status])
+  @@index([transactionId])
+}
