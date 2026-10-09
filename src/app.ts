@@ -16,6 +16,7 @@ import { InvoiceRoutes } from "./modules/invoice/invoice.routes";
 import { PaymentRoutes } from "./modules/payment/payment.routes";
 import { stripeWebhook } from "./modules/payment/payment.controller";
 import { ReviewRoutes } from "./modules/review/review.routes";
+import { AdminRoutes } from "./modules/admin/admin.routes";
 
 
 
@@ -63,7 +64,7 @@ app.use("/api/v1/service-requests", ServiceRequestRoutes);
 app.use("/api/v1/invoices", InvoiceRoutes);
 app.use("/api/v1/payments", PaymentRoutes);
 app.use("/api/v1/reviews", ReviewRoutes);
-
+app.use("/api/v1/admin", AdminRoutes);
 app.use(notFound);
 app.use(globalErrorHandler);
 
