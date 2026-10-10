@@ -1,7 +1,14 @@
 import { InvoiceStatus, RequestStatus, Role } from "../../../prisma/generated/prisma/enums";
 import prisma from "../../lib/prisma";
+import { getCache, setCache } from "../../lib/redis";
 
 export const getDashboardStats = async () => {
+  const cacheKey = "admin:dashboard:stats";
+  const cached = await getCache<any>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   const [
     totalUsers,
     customersCount,
@@ -67,6 +74,10 @@ export const getDashboardStats = async () => {
     requestsByStatus,
     recentRequests,
   };
+
+  await setCache(cacheKey, result, 120);
+
+  return result;
 };
 
 export const getAuditLogs = async (query: {

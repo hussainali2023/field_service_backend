@@ -17,6 +17,7 @@ import { PaymentRoutes } from "./modules/payment/payment.routes";
 import { stripeWebhook } from "./modules/payment/payment.controller";
 import { ReviewRoutes } from "./modules/review/review.routes";
 import { AdminRoutes } from "./modules/admin/admin.routes";
+import { UploadRoutes } from "./modules/upload/upload.routes";
 
 
 
@@ -26,7 +27,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: [config.CLIENT_URL, "http://localhost:3000", "http://localhost:5173"],
+    origin: ["https://field-service-frontend.vercel.app", config.CLIENT_URL, "http://localhost:3000", "http://localhost:5173"],
     credentials: true,
   })
 );
@@ -65,6 +66,7 @@ app.use("/api/v1/invoices", InvoiceRoutes);
 app.use("/api/v1/payments", PaymentRoutes);
 app.use("/api/v1/reviews", ReviewRoutes);
 app.use("/api/v1/admin", AdminRoutes);
+app.use("/api/v1/upload", UploadRoutes);
 
 
 app.use(notFound);

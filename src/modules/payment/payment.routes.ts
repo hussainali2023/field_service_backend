@@ -24,6 +24,10 @@ router.post(
   PaymentController.verifyPayment
 );
 
+router.get("/", auth(Role.ADMIN), PaymentController.getAllPayments);
+
+router.get("/my-payments", auth(Role.CUSTOMER), PaymentController.getMyPayments);
+
 router.get("/:id", auth(), PaymentController.getPaymentById);
 
-export const PaymentRoutes:Router = router;
+export const PaymentRoutes: Router = router;

@@ -3,7 +3,9 @@ import { Role } from "../../../prisma/generated/prisma/enums";
 import { auth } from "../../middleware/auth";
 import { validateRequest } from "../../middleware/validateRequest";
 import * as UserController from "./user.controller";
+import { upload } from "../../lib/multer";
 import {
+  createUserValidationSchema,
   updateProfileValidationSchema,
   updateUserStatusValidationSchema,
 } from "./user.validation";
@@ -11,6 +13,13 @@ import {
 const router = Router();
 
 router.get("/", auth(Role.ADMIN), UserController.getAllUsers);
+
+router.post(
+  "/",
+  auth(Role.ADMIN),
+  validateRequest(createUserValidationSchema),
+  UserController.createUser
+);
 
 router.get("/:id", auth(), UserController.getUserById);
 
@@ -22,6 +31,13 @@ router.patch(
 );
 
 router.patch(
+  "/me/avatar",
+  auth(),
+  upload.single("file"),
+  UserController.uploadAvatar
+);
+
+router.patch(
   "/:id/status",
   auth(Role.ADMIN),
   validateRequest(updateUserStatusValidationSchema),
@@ -30,4 +46,4 @@ router.patch(
 
 router.delete("/:id", auth(Role.ADMIN), UserController.softDeleteUser);
 
-export const UserRoutes:Router = router;
+export const UserRoutes: Router = router;

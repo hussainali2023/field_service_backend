@@ -1230,6 +1230,7 @@ export const ServiceRequestScalarFieldEnum = {
   adminNotes: 'adminNotes',
   serviceReport: 'serviceReport',
   partsUsed: 'partsUsed',
+  attachments: 'attachments',
   isDeleted: 'isDeleted',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',

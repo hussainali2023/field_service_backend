@@ -2,6 +2,7 @@ import type Stripe from "stripe";
 import { InvoiceStatus, PaymentMethod, PaymentStatus, Role } from "../../../prisma/generated/prisma/enums";
 import config from "../../config";
 import prisma from "../../lib/prisma";
+import { deleteCachePattern } from "../../lib/redis";
 import stripe from "../../lib/stripe";
 import { AppError } from "../../utils/appError";
 import { logAudit } from "../../utils/auditLogger";
@@ -268,4 +269,72 @@ export const getPaymentById = async (id: string, user: { id: string; role: Role 
   }
 
   return payment;
+};
+
+export const getMyPayments = async (customerId: string) => {
+  const payments = await prisma.payment.findMany({
+    where: {
+      invoice: {
+        serviceRequest: {
+          customerId,
+        },
+      },
+    },
+    include: {
+      invoice: {
+        include: {
+          serviceRequest: {
+            include: { service: true },
+          },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return payments;
+};
+
+export const getAllPayments = async (query: {
+  page?: string;
+  limit?: string;
+  status?: PaymentStatus;
+  method?: PaymentMethod;
+}) => {
+  const page = Math.max(1, Number(query.page) || 1);
+  const limit = Math.max(1, Number(query.limit) || 10);
+  const skip = (page - 1) * limit;
+
+  const where: any = {};
+  if (query.status) where.status = query.status;
+  if (query.method) where.method = query.method;
+
+  const [payments, total] = await Promise.all([
+    prisma.payment.findMany({
+      where,
+      skip,
+      take: limit,
+      include: {
+        invoice: {
+          include: {
+            serviceRequest: {
+              include: { customer: true, service: true },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.payment.count({ where }),
+  ]);
+
+  return {
+    payments,
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };

@@ -1,5 +1,8 @@
+import bcrypt from "bcryptjs";
 import { Prisma } from "../../../prisma/generated/prisma/client";
 import { Role, UserStatus } from "../../../prisma/generated/prisma/enums";
+import config from "../../config";
+import { uploadToCloudinary } from "../../lib/cloudinary";
 import prisma from "../../lib/prisma";
 import { AppError } from "../../utils/appError";
 import { logAudit } from "../../utils/auditLogger";
@@ -179,3 +182,115 @@ export const softDeleteUser = async (userId: string, adminId: string) => {
 
   return { message: "User deleted successfully" };
 };
+
+export const createUserByAdmin = async (
+  payload: {
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+    role?: Role;
+    skills?: string[];
+    experienceYears?: number;
+    hourlyRate?: number;
+    serviceArea?: string;
+  },
+  adminId: string
+) => {
+  const existingUser = await prisma.user.findUnique({
+    where: { email: payload.email.toLowerCase() },
+  });
+
+  if (existingUser) {
+    throw new AppError(409, "User with this email already exists");
+  }
+
+  const hashedPassword = await bcrypt.hash(payload.password, config.BCRYPT_SALT_ROUNDS);
+  const targetRole = payload.role || Role.CUSTOMER;
+
+  const newUser = await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        name: payload.name,
+        email: payload.email.toLowerCase(),
+        password: hashedPassword,
+        phone: payload.phone,
+        role: targetRole,
+        status: UserStatus.ACTIVE,
+      },
+    });
+
+    if (targetRole === Role.TECHNICIAN) {
+      await tx.technicianProfile.create({
+        data: {
+          userId: user.id,
+          skills: payload.skills || ["General Maintenance"],
+          experienceYears: payload.experienceYears || 1,
+          hourlyRate: payload.hourlyRate || 35.0,
+          serviceArea: payload.serviceArea || "Metro Area",
+        },
+      });
+    }
+
+    return user;
+  });
+
+  const fullUser = await prisma.user.findUnique({
+    where: { id: newUser.id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      status: true,
+      avatar: true,
+      createdAt: true,
+      technicianProfile: true,
+    },
+  });
+
+  await logAudit({
+    userId: adminId,
+    action: "USER_CREATED_BY_ADMIN",
+    entity: "User",
+    entityId: newUser.id,
+    details: { email: newUser.email, role: newUser.role },
+  });
+
+  return fullUser;
+};
+
+export const uploadAvatar = async (userId: string, file: Express.Multer.File) => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user || user.isDeleted) {
+    throw new AppError(404, "User not found");
+  }
+
+  const result = await uploadToCloudinary(file, "field_service/avatars");
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: { avatar: result.url },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      status: true,
+      avatar: true,
+      updatedAt: true,
+    },
+  });
+
+  await logAudit({
+    userId,
+    action: "AVATAR_UPLOADED",
+    entity: "User",
+    entityId: userId,
+  });
+
+  return updatedUser;
+};
+

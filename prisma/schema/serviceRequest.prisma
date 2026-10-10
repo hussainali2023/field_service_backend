@@ -21,6 +21,7 @@ model ServiceRequest {
   adminNotes         String?
   serviceReport      String?
   partsUsed          String?
+  attachments        String[]           @default([])
   isDeleted          Boolean            @default(false)
   deletedAt          DateTime?
 

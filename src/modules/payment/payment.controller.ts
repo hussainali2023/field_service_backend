@@ -43,3 +43,26 @@ export const getPaymentById = catchAsync(async (req: Request, res: Response) => 
     data: result,
   });
 });
+
+export const getMyPayments = catchAsync(async (req: Request, res: Response) => {
+  const result = await PaymentService.getMyPayments(req.user!.id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User payments retrieved successfully",
+    data: result,
+  });
+});
+
+export const getAllPayments = catchAsync(async (req: Request, res: Response) => {
+  const result = await PaymentService.getAllPayments(req.query as any);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All payments retrieved successfully",
+    data: result.payments,
+    meta: result.meta,
+  });
+});

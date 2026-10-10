@@ -63,3 +63,36 @@ export const softDeleteUser = catchAsync(async (req: Request, res: Response) => 
     data: null,
   });
 });
+
+export const createUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.createUserByAdmin(req.body, req.user!.id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "User created successfully by admin",
+    data: result,
+  });
+});
+
+export const uploadAvatar = catchAsync(async (req: Request, res: Response) => {
+  if (!req.file) {
+    sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Please provide an image file in the 'file' field",
+      data: null,
+    });
+    return;
+  }
+
+  const result = await UserService.uploadAvatar(req.user!.id, req.file);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Profile avatar uploaded successfully",
+    data: result,
+  });
+});
+

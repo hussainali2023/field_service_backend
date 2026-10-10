@@ -108,6 +108,7 @@ export type ServiceRequestCountAggregateOutputType = {
   adminNotes: number
   serviceReport: number
   partsUsed: number
+  attachments: number
   isDeleted: number
   deletedAt: number
   createdAt: number
@@ -198,6 +199,7 @@ export type ServiceRequestCountAggregateInputType = {
   adminNotes?: true
   serviceReport?: true
   partsUsed?: true
+  attachments?: true
   isDeleted?: true
   deletedAt?: true
   createdAt?: true
@@ -311,6 +313,7 @@ export type ServiceRequestGroupByOutputType = {
   adminNotes: string | null
   serviceReport: string | null
   partsUsed: string | null
+  attachments: string[]
   isDeleted: boolean
   deletedAt: Date | null
   createdAt: Date
@@ -360,6 +363,7 @@ export type ServiceRequestWhereInput = {
   adminNotes?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   serviceReport?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   partsUsed?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  attachments?: Prisma.StringNullableListFilter<"ServiceRequest">
   isDeleted?: Prisma.BoolFilter<"ServiceRequest"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"ServiceRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
@@ -392,6 +396,7 @@ export type ServiceRequestOrderByWithRelationInput = {
   adminNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceReport?: Prisma.SortOrderInput | Prisma.SortOrder
   partsUsed?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -427,6 +432,7 @@ export type ServiceRequestWhereUniqueInput = Prisma.AtLeast<{
   adminNotes?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   serviceReport?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   partsUsed?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  attachments?: Prisma.StringNullableListFilter<"ServiceRequest">
   isDeleted?: Prisma.BoolFilter<"ServiceRequest"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"ServiceRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
@@ -459,6 +465,7 @@ export type ServiceRequestOrderByWithAggregationInput = {
   adminNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceReport?: Prisma.SortOrderInput | Prisma.SortOrder
   partsUsed?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -493,6 +500,7 @@ export type ServiceRequestScalarWhereWithAggregatesInput = {
   adminNotes?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
   serviceReport?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
   partsUsed?: Prisma.StringNullableWithAggregatesFilter<"ServiceRequest"> | string | null
+  attachments?: Prisma.StringNullableListFilter<"ServiceRequest">
   isDeleted?: Prisma.BoolWithAggregatesFilter<"ServiceRequest"> | boolean
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ServiceRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceRequest"> | Date | string
@@ -516,6 +524,7 @@ export type ServiceRequestCreateInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -548,6 +557,7 @@ export type ServiceRequestUncheckedCreateInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -574,6 +584,7 @@ export type ServiceRequestUpdateInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -606,6 +617,7 @@ export type ServiceRequestUncheckedUpdateInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -635,6 +647,7 @@ export type ServiceRequestCreateManyInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -658,6 +671,7 @@ export type ServiceRequestUpdateManyMutationInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -684,6 +698,7 @@ export type ServiceRequestUncheckedUpdateManyInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -703,6 +718,14 @@ export type ServiceRequestListRelationFilter = {
 
 export type ServiceRequestOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type ServiceRequestCountOrderByAggregateInput = {
@@ -725,6 +748,7 @@ export type ServiceRequestCountOrderByAggregateInput = {
   adminNotes?: Prisma.SortOrder
   serviceReport?: Prisma.SortOrder
   partsUsed?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -863,6 +887,10 @@ export type ServiceRequestUncheckedUpdateManyWithoutServiceNestedInput = {
   deleteMany?: Prisma.ServiceRequestScalarWhereInput | Prisma.ServiceRequestScalarWhereInput[]
 }
 
+export type ServiceRequestCreateattachmentsInput = {
+  set: string[]
+}
+
 export type EnumUrgencyLevelFieldUpdateOperationsInput = {
   set?: $Enums.UrgencyLevel
 }
@@ -877,6 +905,11 @@ export type NullableFloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type ServiceRequestUpdateattachmentsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type ServiceRequestCreateNestedOneWithoutStatusLogsInput = {
@@ -994,6 +1027,7 @@ export type ServiceRequestCreateWithoutInvoiceInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1025,6 +1059,7 @@ export type ServiceRequestUncheckedCreateWithoutInvoiceInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1066,6 +1101,7 @@ export type ServiceRequestUpdateWithoutInvoiceInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1097,6 +1133,7 @@ export type ServiceRequestUncheckedUpdateWithoutInvoiceInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1122,6 +1159,7 @@ export type ServiceRequestCreateWithoutReviewInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1153,6 +1191,7 @@ export type ServiceRequestUncheckedCreateWithoutReviewInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1194,6 +1233,7 @@ export type ServiceRequestUpdateWithoutReviewInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1225,6 +1265,7 @@ export type ServiceRequestUncheckedUpdateWithoutReviewInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1250,6 +1291,7 @@ export type ServiceRequestCreateWithoutServiceInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1280,6 +1322,7 @@ export type ServiceRequestUncheckedCreateWithoutServiceInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1338,6 +1381,7 @@ export type ServiceRequestScalarWhereInput = {
   adminNotes?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   serviceReport?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
   partsUsed?: Prisma.StringNullableFilter<"ServiceRequest"> | string | null
+  attachments?: Prisma.StringNullableListFilter<"ServiceRequest">
   isDeleted?: Prisma.BoolFilter<"ServiceRequest"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"ServiceRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceRequest"> | Date | string
@@ -1361,6 +1405,7 @@ export type ServiceRequestCreateWithoutStatusLogsInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1392,6 +1437,7 @@ export type ServiceRequestUncheckedCreateWithoutStatusLogsInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1433,6 +1479,7 @@ export type ServiceRequestUpdateWithoutStatusLogsInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1464,6 +1511,7 @@ export type ServiceRequestUncheckedUpdateWithoutStatusLogsInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1489,6 +1537,7 @@ export type ServiceRequestCreateWithoutTechnicianInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1519,6 +1568,7 @@ export type ServiceRequestUncheckedCreateWithoutTechnicianInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1571,6 +1621,7 @@ export type ServiceRequestCreateWithoutCustomerInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1601,6 +1652,7 @@ export type ServiceRequestUncheckedCreateWithoutCustomerInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1655,6 +1707,7 @@ export type ServiceRequestCreateManyServiceInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1678,6 +1731,7 @@ export type ServiceRequestUpdateWithoutServiceInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1708,6 +1762,7 @@ export type ServiceRequestUncheckedUpdateWithoutServiceInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1736,6 +1791,7 @@ export type ServiceRequestUncheckedUpdateManyWithoutServiceInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1761,6 +1817,7 @@ export type ServiceRequestCreateManyTechnicianInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1784,6 +1841,7 @@ export type ServiceRequestUpdateWithoutTechnicianInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1814,6 +1872,7 @@ export type ServiceRequestUncheckedUpdateWithoutTechnicianInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1842,6 +1901,7 @@ export type ServiceRequestUncheckedUpdateManyWithoutTechnicianInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1867,6 +1927,7 @@ export type ServiceRequestCreateManyCustomerInput = {
   adminNotes?: string | null
   serviceReport?: string | null
   partsUsed?: string | null
+  attachments?: Prisma.ServiceRequestCreateattachmentsInput | string[]
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1890,6 +1951,7 @@ export type ServiceRequestUpdateWithoutCustomerInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1920,6 +1982,7 @@ export type ServiceRequestUncheckedUpdateWithoutCustomerInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1948,6 +2011,7 @@ export type ServiceRequestUncheckedUpdateManyWithoutCustomerInput = {
   adminNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceReport?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partsUsed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachments?: Prisma.ServiceRequestUpdateattachmentsInput | string[]
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2005,6 +2069,7 @@ export type ServiceRequestSelect<ExtArgs extends runtime.Types.Extensions.Intern
   adminNotes?: boolean
   serviceReport?: boolean
   partsUsed?: boolean
+  attachments?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -2038,6 +2103,7 @@ export type ServiceRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   adminNotes?: boolean
   serviceReport?: boolean
   partsUsed?: boolean
+  attachments?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -2067,6 +2133,7 @@ export type ServiceRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   adminNotes?: boolean
   serviceReport?: boolean
   partsUsed?: boolean
+  attachments?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -2096,13 +2163,14 @@ export type ServiceRequestSelectScalar = {
   adminNotes?: boolean
   serviceReport?: boolean
   partsUsed?: boolean
+  attachments?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ServiceRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "requestNumber" | "customerId" | "serviceId" | "technicianId" | "title" | "description" | "address" | "urgency" | "status" | "preferredDate" | "scheduledDate" | "scheduledEndDate" | "estimatedPrice" | "finalPrice" | "cancellationReason" | "adminNotes" | "serviceReport" | "partsUsed" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceRequest"]>
+export type ServiceRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "requestNumber" | "customerId" | "serviceId" | "technicianId" | "title" | "description" | "address" | "urgency" | "status" | "preferredDate" | "scheduledDate" | "scheduledEndDate" | "estimatedPrice" | "finalPrice" | "cancellationReason" | "adminNotes" | "serviceReport" | "partsUsed" | "attachments" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceRequest"]>
 export type ServiceRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
@@ -2153,6 +2221,7 @@ export type $ServiceRequestPayload<ExtArgs extends runtime.Types.Extensions.Inte
     adminNotes: string | null
     serviceReport: string | null
     partsUsed: string | null
+    attachments: string[]
     isDeleted: boolean
     deletedAt: Date | null
     createdAt: Date
@@ -2605,6 +2674,7 @@ export interface ServiceRequestFieldRefs {
   readonly adminNotes: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly serviceReport: Prisma.FieldRef<"ServiceRequest", 'String'>
   readonly partsUsed: Prisma.FieldRef<"ServiceRequest", 'String'>
+  readonly attachments: Prisma.FieldRef<"ServiceRequest", 'String[]'>
   readonly isDeleted: Prisma.FieldRef<"ServiceRequest", 'Boolean'>
   readonly deletedAt: Prisma.FieldRef<"ServiceRequest", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ServiceRequest", 'DateTime'>

@@ -1,8 +1,10 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
 import { Role, UserStatus } from "../../../prisma/generated/prisma/enums";
 import config from "../../config";
 import prisma from "../../lib/prisma";
+import { getCache, setCache, deleteCache } from "../../lib/redis";
 import { AppError } from "../../utils/appError";
 import { logAudit } from "../../utils/auditLogger";
 import { createTokenPair, signAccessToken, verifyRefreshToken } from "../../utils/jwt";
@@ -14,6 +16,11 @@ export const registerUser = async (payload: {
   email: string;
   password: string;
   phone?: string;
+  role?: "CUSTOMER" | "TECHNICIAN";
+  skills?: string[];
+  experienceYears?: number;
+  hourlyRate?: number;
+  serviceArea?: string;
 }) => {
   const existingUser = await prisma.user.findUnique({
     where: { email: payload.email.toLowerCase() },
@@ -24,16 +31,37 @@ export const registerUser = async (payload: {
   }
 
   const hashedPassword = await bcrypt.hash(payload.password, config.BCRYPT_SALT_ROUNDS);
+  const targetRole = payload.role === "TECHNICIAN" ? Role.TECHNICIAN : Role.CUSTOMER;
 
-  const newUser = await prisma.user.create({
-    data: {
-      name: payload.name,
-      email: payload.email.toLowerCase(),
-      password: hashedPassword,
-      phone: payload.phone,
-      role: Role.CUSTOMER,
-      status: UserStatus.ACTIVE,
-    },
+  const newUser = await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        name: payload.name,
+        email: payload.email.toLowerCase(),
+        password: hashedPassword,
+        phone: payload.phone,
+        role: targetRole,
+        status: UserStatus.ACTIVE,
+      },
+    });
+
+    if (targetRole === Role.TECHNICIAN) {
+      await tx.technicianProfile.create({
+        data: {
+          userId: user.id,
+          skills: payload.skills && payload.skills.length > 0 ? payload.skills : ["General Repair"],
+          experienceYears: payload.experienceYears || 1,
+          hourlyRate: payload.hourlyRate || 35.0,
+          serviceArea: payload.serviceArea || "Metro Area",
+        },
+      });
+    }
+
+    return user;
+  });
+
+  const fullUser = await prisma.user.findUnique({
+    where: { id: newUser.id },
     select: {
       id: true,
       name: true,
@@ -41,25 +69,27 @@ export const registerUser = async (payload: {
       role: true,
       status: true,
       phone: true,
+      avatar: true,
       createdAt: true,
+      technicianProfile: true,
     },
   });
 
   const tokens = createTokenPair({
-    id: newUser.id,
-    email: newUser.email,
-    role: newUser.role,
+    id: fullUser!.id,
+    email: fullUser!.email,
+    role: fullUser!.role,
   });
 
   await logAudit({
-    userId: newUser.id,
+    userId: fullUser!.id,
     action: "USER_REGISTERED",
     entity: "User",
-    entityId: newUser.id,
-    details: { email: newUser.email, role: newUser.role },
+    entityId: fullUser!.id,
+    details: { email: fullUser!.email, role: fullUser!.role },
   });
 
-  return { user: newUser, ...tokens };
+  return { user: fullUser, ...tokens };
 };
 
 export const loginUser = async (payload: { email: string; password: string }) => {
@@ -233,3 +263,78 @@ export const changePassword = async (
 
   return { message: "Password updated successfully" };
 };
+
+export const forgotPassword = async (email: string) => {
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
+
+  if (!user || user.isDeleted) {
+    // Return friendly message even if email not found to avoid account enumeration
+    return {
+      message: "If an account exists with this email, password reset instructions have been generated.",
+    };
+  }
+
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  const cacheKey = `pwd_reset:${normalizedEmail}`;
+
+  // Store in Redis with 15 minutes expiration (900 seconds)
+  await setCache(cacheKey, resetToken, 900);
+
+  await logAudit({
+    userId: user.id,
+    action: "PASSWORD_RESET_REQUESTED",
+    entity: "User",
+    entityId: user.id,
+    details: { email: normalizedEmail },
+  });
+
+  return {
+    message: "Password reset token generated successfully. Valid for 15 minutes.",
+    resetToken,
+  };
+};
+
+export const resetPassword = async (payload: {
+  email: string;
+  token: string;
+  newPassword: string;
+}) => {
+  const normalizedEmail = payload.email.toLowerCase().trim();
+  const cacheKey = `pwd_reset:${normalizedEmail}`;
+
+  const storedToken = await getCache<string>(cacheKey);
+
+  if (!storedToken || storedToken !== payload.token) {
+    throw new AppError(400, "Invalid or expired password reset token");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
+
+  if (!user || user.isDeleted) {
+    throw new AppError(404, "User not found");
+  }
+
+  const hashedNewPassword = await bcrypt.hash(payload.newPassword, config.BCRYPT_SALT_ROUNDS);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashedNewPassword },
+  });
+
+  await deleteCache(cacheKey);
+
+  await logAudit({
+    userId: user.id,
+    action: "PASSWORD_RESET_COMPLETED",
+    entity: "User",
+    entityId: user.id,
+  });
+
+  return { message: "Password reset successfully. You can now login with your new password." };
+};
+

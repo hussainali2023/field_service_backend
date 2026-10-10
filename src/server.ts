@@ -1,6 +1,7 @@
 import app from "./app";
 import config from "./config";
 import prisma from "./lib/prisma";
+import { initRedis, redisClient } from "./lib/redis";
 
 const PORT = Number(config.PORT) || 5000;
 
@@ -8,6 +9,8 @@ async function main() {
   try {
     await prisma.$connect();
     console.log("Connected to PostgreSQL database successfully.");
+
+    await initRedis();
 
     const server = app.listen(PORT, () => {
       console.log(`Server is running at http://localhost:${PORT}`);
